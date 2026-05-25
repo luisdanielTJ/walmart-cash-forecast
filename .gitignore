@@ -32,8 +32,12 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Large artifacts (NetCDF traces can be large — keep lgbm and conformal only)
-artifacts/bayesian/
+# Trained model artefacts (large — not committed, reproduced by make train)
+models/
+*.nc
 
 # Data processed outputs
 data/processed/
+
+# mypy cache
+.mypy_cache/

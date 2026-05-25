@@ -84,21 +84,30 @@ class TrainingPipeline:
         aggregator = StoreAggregator()
         panel = aggregator.aggregate(transactions)
 
-        # Derive day_of_week from date — needed by CashImputer and FeatureEngine
+        # Derive day_of_week — always available from date
         panel["day_of_week"] = panel["date"].dt.dayofweek
-        # Derive is_payday: day 15 and last calendar day of month (quincena)
-        panel["is_payday"] = panel["date"].dt.day.isin([15]) | (
-            panel["date"] == panel["date"].dt.to_period("M").dt.to_timestamp("M")
-        )
 
-        # Merge store metadata and calendar features
+        # Merge store metadata
         panel = panel.merge(stores[["store_id", "region", "store_format"]], on="store_id", how="left")
+
+        # Merge calendar features — prefer calendar's is_payday over naive formula
+        # because the calendar already handles edge cases (e.g. payday on weekend)
+        cal_cols = ["date", "is_holiday", "is_buen_fin", "is_navidad_season"]
         if calendar is not None:
-            panel = panel.merge(
-                calendar[["date", "is_holiday", "is_buen_fin", "is_navidad_season"]],
-                on="date",
-                how="left",
+            if "is_payday" in calendar.columns:
+                cal_cols.append("is_payday")
+            panel = panel.merge(calendar[cal_cols], on="date", how="left")
+
+        # Fallback: derive is_payday from date when calendar is absent or doesn't cover all dates
+        if "is_payday" not in panel.columns or panel["is_payday"].isna().any():
+            derived = panel["date"].dt.day.isin([15]) | (
+                panel["date"] == panel["date"].dt.to_period("M").dt.to_timestamp("M")
             )
+            if "is_payday" in panel.columns:
+                panel["is_payday"] = panel["is_payday"].fillna(derived)
+            else:
+                panel["is_payday"] = derived
+
         # Fill any unmatched calendar flags with False
         for col in ["is_holiday", "is_buen_fin", "is_navidad_season"]:
             if col not in panel.columns:
