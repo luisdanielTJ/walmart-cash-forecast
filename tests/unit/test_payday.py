@@ -1,6 +1,7 @@
 """Tests for PaydayEffectTester."""
 import numpy as np
 import pandas as pd
+
 from walmart_cash_forecast.stats.payday import PaydayEffectTester, PaydayResult
 
 

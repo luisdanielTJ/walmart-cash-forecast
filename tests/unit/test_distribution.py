@@ -1,5 +1,6 @@
 """Tests for DistributionFitter."""
 import numpy as np
+
 from walmart_cash_forecast.stats.distribution import DistributionFitter, DistributionResult
 
 

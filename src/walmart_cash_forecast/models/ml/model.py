@@ -215,7 +215,7 @@ class MLForecaster:
                     random_state=self.config.random_seed,
                     n_jobs=-1,
                     verbose=-1,
-                    **params,
+                    **params,  # type: ignore[arg-type]
                 )
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")

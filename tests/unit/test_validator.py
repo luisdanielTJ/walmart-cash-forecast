@@ -1,5 +1,6 @@
 """Tests for DataValidator."""
 import pytest
+
 from walmart_cash_forecast.data.validator import DataValidator, ValidationError
 
 

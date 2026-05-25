@@ -14,10 +14,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from walmart_cash_forecast.config import Config, MLConfig, BayesianConfig
-from walmart_cash_forecast.pipelines.training import TrainingPipeline
+from walmart_cash_forecast.config import BayesianConfig, Config, MLConfig
 from walmart_cash_forecast.pipelines.prediction import PredictionPipeline
-
+from walmart_cash_forecast.pipelines.training import TrainingPipeline
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -148,8 +147,8 @@ def test_prediction_pipeline_produces_output(fast_config, tmp_path):
     # Create minimal future feature DataFrame (ML features only; Bayesian is mocked)
     from walmart_cash_forecast.data.loader import DataLoader
     from walmart_cash_forecast.features.aggregator import StoreAggregator
-    from walmart_cash_forecast.features.imputer import CashImputer
     from walmart_cash_forecast.features.engineer import FeatureEngine
+    from walmart_cash_forecast.features.imputer import CashImputer
 
     transactions, stores, calendar = DataLoader(data_dir).load()
     panel = StoreAggregator().aggregate(transactions)

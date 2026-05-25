@@ -19,7 +19,6 @@ import numpy as np
 import pandas as pd
 
 from walmart_cash_forecast.config import Config
-from walmart_cash_forecast.features.engineer import FeatureEngine
 from walmart_cash_forecast.models.bayesian.model import BayesianForecaster
 from walmart_cash_forecast.models.blender import ModelBlender
 from walmart_cash_forecast.models.conformal import ConformalWrapper

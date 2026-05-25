@@ -1,7 +1,9 @@
 """Tests for StatAnalyzer."""
 import json
+
 import numpy as np
 import pandas as pd
+
 from walmart_cash_forecast.stats.reporter import StatAnalyzer
 
 
@@ -27,7 +29,7 @@ def make_panel(n_stores=3, n_days=60):
 
 def test_stat_analyzer_produces_json_report(tmp_path):
     panel = make_panel()
-    report = StatAnalyzer().run(panel, output_dir=tmp_path)
+    StatAnalyzer().run(panel, output_dir=tmp_path)
     report_file = tmp_path / "stats_summary.json"
     assert report_file.exists()
     loaded = json.loads(report_file.read_text())

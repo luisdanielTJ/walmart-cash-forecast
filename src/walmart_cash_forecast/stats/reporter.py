@@ -41,7 +41,7 @@ class StatAnalyzer:
         # --- 1. Distribution fitting on cash_transactions ---
         # Justifies the Negative Binomial likelihood used in the Bayesian model
         fitter = DistributionFitter()
-        counts = df["cash_transactions"].dropna().astype(int).values
+        counts: np.ndarray = np.asarray(df["cash_transactions"].dropna().astype(int).values)
         dist_result = fitter.fit(counts)
         report["distribution"] = {
             "best_model": dist_result.best_model,
@@ -55,7 +55,11 @@ class StatAnalyzer:
         tester = StationarityTester()
         stationarity_results: dict = {}
         for store_id, group in df.groupby("store_id"):
-            series = group.set_index("date")["amount_cash"] if "date" in group.columns else group["amount_cash"]
+            series = (
+                group.set_index("date")["amount_cash"]
+                if "date" in group.columns
+                else group["amount_cash"]
+            )
             result = tester.test(series)
             stationarity_results[str(store_id)] = {
                 "adf_pvalue": round(result.adf_pvalue, 4),

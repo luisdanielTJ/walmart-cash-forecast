@@ -28,9 +28,9 @@ app = typer.Typer(
 
 @app.command()
 def train(
-    data_dir: Path = typer.Option(..., help="Directory with transactions.csv, stores.csv, calendar.csv"),
+    data_dir: Path = typer.Option(..., help="Dir with transactions.csv, stores.csv, calendar.csv"),
     model_dir: Path = typer.Option(..., help="Output directory for trained model artefacts"),
-    config_path: Optional[Path] = typer.Option(None, help="Path to config.yaml (uses defaults if omitted)"),
+    config_path: Optional[Path] = typer.Option(None, help="Path to config.yaml (optional)"),
 ) -> None:
     """Run the full training pipeline: load data → fit models → save artefacts."""
     from walmart_cash_forecast.config import Config
@@ -55,6 +55,7 @@ def predict(
 ) -> None:
     """Generate cash recommendations for future store-dates."""
     import pandas as pd
+
     from walmart_cash_forecast.config import Config
     from walmart_cash_forecast.pipelines.prediction import PredictionPipeline
 
@@ -82,8 +83,9 @@ def serve(
 ) -> None:
     """Start the FastAPI prediction server with uvicorn."""
     import uvicorn
-    from walmart_cash_forecast.config import Config
+
     from walmart_cash_forecast.api.app import create_app
+    from walmart_cash_forecast.config import Config
 
     cfg = Config.from_yaml(config_path) if config_path else Config()
     application = create_app(cfg, model_dir)
@@ -98,7 +100,6 @@ def stats(
     config_path: Optional[Path] = typer.Option(None, help="Path to config.yaml"),
 ) -> None:
     """Run statistical analyses (distribution, stationarity, STL, payday effect)."""
-    import pandas as pd
     from walmart_cash_forecast.config import Config
     from walmart_cash_forecast.data.loader import DataLoader
     from walmart_cash_forecast.features.aggregator import StoreAggregator

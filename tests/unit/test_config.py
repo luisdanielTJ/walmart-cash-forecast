@@ -1,5 +1,4 @@
 """Tests for the Config module."""
-from pathlib import Path
 
 from walmart_cash_forecast.config import Config
 

@@ -1,5 +1,6 @@
 """Tests for DataLoader."""
 import pandas as pd
+
 from walmart_cash_forecast.data.loader import DataLoader
 
 

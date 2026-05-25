@@ -1,5 +1,6 @@
 """Tests for StoreAggregator."""
 import pandas as pd
+
 from walmart_cash_forecast.features.aggregator import StoreAggregator
 
 CATEGORIES = ["Abarrotes", "Bebidas"]

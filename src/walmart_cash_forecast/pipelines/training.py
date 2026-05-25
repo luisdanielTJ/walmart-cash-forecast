@@ -88,7 +88,9 @@ class TrainingPipeline:
         panel["day_of_week"] = panel["date"].dt.dayofweek
 
         # Merge store metadata
-        panel = panel.merge(stores[["store_id", "region", "store_format"]], on="store_id", how="left")
+        panel = panel.merge(
+            stores[["store_id", "region", "store_format"]], on="store_id", how="left"
+        )
 
         # Merge calendar features — prefer calendar's is_payday over naive formula
         # because the calendar already handles edge cases (e.g. payday on weekend)

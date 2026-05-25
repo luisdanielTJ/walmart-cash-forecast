@@ -14,8 +14,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import pandas as pd
-from statsmodels.tsa.seasonal import STL
 from statsmodels.stats.diagnostic import acorr_ljungbox
+from statsmodels.tsa.seasonal import STL
 
 
 @dataclass

@@ -9,7 +9,6 @@ this prevents any data leakage from future periods into the imputed values.
 """
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 
 # Columns that may have nulls due to POS/connectivity failures
@@ -28,7 +27,7 @@ class CashImputer:
     def fit(self, df: pd.DataFrame) -> "CashImputer":
         """Compute day-of-week medians per store from the training DataFrame."""
         for (store_id, dow), group in df.groupby(["store_id", "day_of_week"]):
-            self._medians[(store_id, int(dow))] = {
+            self._medians[(str(store_id), int(dow))] = {  # type: ignore[call-overload]
                 col: float(group[col].median())
                 for col in _CASH_COLS
                 if col in df.columns

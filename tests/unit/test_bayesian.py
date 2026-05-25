@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from walmart_cash_forecast.config import Config, BayesianConfig
+from walmart_cash_forecast.config import BayesianConfig, Config
 from walmart_cash_forecast.models.bayesian.model import BayesianForecaster
 
 

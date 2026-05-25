@@ -2,7 +2,7 @@
 import pandas as pd
 import pytest
 
-from walmart_cash_forecast.optimization.denomination import DenominationSolver, DENOMINATIONS
+from walmart_cash_forecast.optimization.denomination import DENOMINATIONS, DenominationSolver
 
 
 def test_solve_covers_target():

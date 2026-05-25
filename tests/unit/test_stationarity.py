@@ -1,7 +1,8 @@
 """Tests for StationarityTester."""
 import numpy as np
 import pandas as pd
-from walmart_cash_forecast.stats.stationarity import StationarityTester, StationarityResult
+
+from walmart_cash_forecast.stats.stationarity import StationarityResult, StationarityTester
 
 
 def test_stationary_series_detected():

@@ -92,7 +92,9 @@ def synthetic_transactions(synthetic_stores) -> pd.DataFrame:
                     "units_sold": float(rng.integers(100, 5000)) if rng.random() > 0.05 else None,
                     "avg_ticket": amount_total / total if rng.random() > 0.05 else None,
                     "has_promotion": int(rng.random() > 0.8),
-                    "replenishment_signal": float(rng.uniform(100, 2000)) if rng.random() > 0.1 else None,
+                    "replenishment_signal": float(rng.uniform(100, 2000))
+                    if rng.random() > 0.1
+                    else None,
                 })
     return pd.DataFrame(rows)
 
