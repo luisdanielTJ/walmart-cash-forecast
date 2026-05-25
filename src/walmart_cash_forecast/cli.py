@@ -37,11 +37,11 @@ def train(
     from walmart_cash_forecast.pipelines.training import TrainingPipeline
 
     cfg = Config.from_yaml(config_path) if config_path else Config()
-    typer.echo(f"Training with data from {data_dir} → artefacts to {model_dir}")
+    typer.echo(f"Training with data from {data_dir} -> artefacts to {model_dir}")
     metadata = TrainingPipeline(cfg, data_dir, model_dir).run()
     typer.echo(f"Train rows: {metadata['train_rows']}, Calib rows: {metadata['calib_rows']}")
     typer.echo(f"Blend weights (Bayes, ML): {metadata['blend_weights']}")
-    typer.echo(f"Conformal q̂: {metadata['conformal_q_hat']:.2f} MXN")
+    typer.echo(f"Conformal q_hat: {metadata['conformal_q_hat']:.2f} MXN")
     typer.echo("Training complete.")
 
 

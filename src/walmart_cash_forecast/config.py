@@ -19,6 +19,8 @@ class BayesianConfig:
     n_chains: int = 4
     n_draws: int = 2000
     n_tune: int = 1000
+    # Higher target_accept reduces divergences at the cost of smaller step sizes
+    target_accept: float = 0.9
 
 
 @dataclass

@@ -109,14 +109,15 @@ class BayesianForecaster:
             mu_format = pm.Normal("mu_format", mu=0, sigma=1, shape=n_formats)
             sigma_store = pm.HalfNormal("sigma_store", sigma=1)
 
-            # --- Store-level intercepts: partial pooling across region + format ---
-            # Each store's baseline is pulled toward its region+format group mean,
-            # with sigma_store controlling how tightly the pooling is applied
-            alpha_s = pm.Normal(
+            # --- Store-level intercepts: non-centered parameterization ---
+            # Non-centered form avoids the "Neal's funnel" geometry that causes
+            # divergences when sigma_store → 0. We sample offsets from N(0,1)
+            # and shift/scale them explicitly (Betancourt & Girolami, 2015).
+            alpha_s_offset = pm.Normal("alpha_s_offset", mu=0, sigma=1, shape=n_stores)
+            alpha_s = pm.Deterministic(
                 "alpha_s",
-                mu=mu_region[self._store_region] + mu_format[self._store_format],
-                sigma=sigma_store,
-                shape=n_stores,
+                mu_region[self._store_region] + mu_format[self._store_format]
+                + sigma_store * alpha_s_offset,
             )
 
             # --- Day-of-week seasonality coefficients (0=Monday, 6=Sunday) ---
@@ -142,11 +143,13 @@ class BayesianForecaster:
             sigma_obs = pm.HalfNormal("sigma_obs", sigma=0.5)
             _y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma_obs, observed=log_y, dims="obs")
 
-            # Sample with NUTS — fixed seed ensures reproducible posterior
+            # Sample with NUTS — target_accept=0.9 reduces divergences from
+            # the hierarchical funnel; fixed seed ensures reproducibility
             self._trace = pm.sample(
                 draws=self.config.bayesian.n_draws,
                 tune=self.config.bayesian.n_tune,
                 chains=self.config.bayesian.n_chains,
+                target_accept=self.config.bayesian.target_accept,
                 random_seed=self.config.random_seed,
                 progressbar=False,
                 return_inferencedata=True,
