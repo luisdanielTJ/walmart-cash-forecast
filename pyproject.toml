@@ -29,6 +29,7 @@ dependencies = [
     "ipykernel>=6.0",
     "h5netcdf>=1.1",
     "h5py>=3.16.0",
+    "mlflow>=2.10",
 ]
 
 [project.scripts]

@@ -32,7 +32,9 @@ def train(
     model_dir: Path = typer.Option(..., help="Output directory for trained model artefacts"),
     config_path: Optional[Path] = typer.Option(None, help="Path to config.yaml (optional)"),
 ) -> None:
-    """Run the full training pipeline: load data → fit models → save artefacts."""
+    """Run the full training pipeline: load data -> fit models -> save artefacts."""
+    import mlflow
+
     from walmart_cash_forecast.config import Config
     from walmart_cash_forecast.pipelines.training import TrainingPipeline
 
@@ -42,6 +44,9 @@ def train(
     typer.echo(f"Train rows: {metadata['train_rows']}, Calib rows: {metadata['calib_rows']}")
     typer.echo(f"Blend weights (Bayes, ML): {metadata['blend_weights']}")
     typer.echo(f"Conformal q_hat: {metadata['conformal_q_hat']:.2f} MXN")
+    run = mlflow.last_active_run()
+    if run:
+        typer.echo(f"MLflow run ID: {run.info.run_id}  (view: mlflow ui)")
     typer.echo("Training complete.")
 
 

@@ -14,6 +14,7 @@ import json
 import logging
 from pathlib import Path
 
+import mlflow
 import numpy as np
 import pandas as pd
 
@@ -68,6 +69,12 @@ class TrainingPipeline:
         """
         self.model_dir.mkdir(parents=True, exist_ok=True)
 
+        mlflow.set_experiment("walmart-cash-forecast")
+        with mlflow.start_run():
+            return self._run()
+
+    def _run(self) -> dict:
+        """Inner implementation — called inside an active MLflow run."""
         # --- Step 1: Load + validate ---
         logger.info("Loading data from %s", self.data_dir)
         loader = DataLoader(self.data_dir)
@@ -180,5 +187,42 @@ class TrainingPipeline:
         (self.model_dir / "training_metadata.json").write_text(
             json.dumps(metadata, indent=2, default=str)
         )
+
+        # --- MLflow: log params, metrics, and artefact directory ---
+        mlflow.log_params({
+            # Sampling
+            "n_draws": self.config.bayesian.n_draws,
+            "n_tune": self.config.bayesian.n_tune,
+            "n_chains": self.config.bayesian.n_chains,
+            "target_accept": self.config.bayesian.target_accept,
+            # Data split
+            "holdout_days": self.config.holdout_days,
+            "random_seed": self.config.random_seed,
+            # Cost model
+            "cost_underage": self.config.newsvendor.cost_underage,
+            "cost_overage": self.config.newsvendor.cost_overage,
+            # Conformal
+            "conformal_alpha": self.config.conformal.alpha,
+            # Optuna
+            "n_optuna_trials": self.config.ml.n_optuna_trials,
+        })
+        mlflow.log_metrics({
+            "train_rows": metadata["train_rows"],
+            "calib_rows": metadata["calib_rows"],
+            "n_stores": metadata["n_stores"],
+            "blend_weight_bayes": blender.weights[0],
+            "blend_weight_ml": blender.weights[1],
+            "conformal_q_hat": conformal.q_hat,
+            # Statistical analysis findings
+            "payday_pvalue": stat_report["payday_effect"]["pvalue"],
+            "payday_effect_size": stat_report["payday_effect"]["effect_size"],
+            "pct_stores_stationary": stat_report["stationarity"]["pct_stores_stationary"],
+            "negbin_alpha": stat_report["distribution"]["negbin_alpha"],
+            "aic_negbin": stat_report["distribution"]["aic_negbin"],
+            "aic_poisson": stat_report["distribution"]["aic_poisson"],
+        })
+        mlflow.log_param("dist_best_model", stat_report["distribution"]["best_model"])
+        mlflow.log_artifacts(str(self.model_dir), artifact_path="model_artefacts")
+
         logger.info("Training complete. Artefacts saved to %s", self.model_dir)
         return metadata

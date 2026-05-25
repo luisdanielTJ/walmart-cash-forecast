@@ -36,6 +36,9 @@ Thumbs.db
 /models/
 *.nc
 
+# MLflow tracking store (local runs — not committed)
+/mlruns/
+
 # Data processed outputs
 data/processed/
 

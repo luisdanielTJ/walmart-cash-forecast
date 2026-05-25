@@ -123,6 +123,26 @@ Example request:
 
 Interactive docs: `http://localhost:8000/docs`
 
+## MLflow Experiment Tracking
+
+Every training run is automatically logged to a local MLflow tracking store.
+
+```bash
+# After running walmart-forecast train ..., open the UI:
+mlflow ui
+# → http://localhost:5000
+```
+
+Logged per run:
+
+| Category | Items |
+|----------|-------|
+| **Params** | `n_draws`, `n_tune`, `n_chains`, `target_accept`, `holdout_days`, `random_seed`, cost model, conformal α, Optuna trials |
+| **Metrics** | `blend_weight_bayes/ml`, `conformal_q_hat`, `payday_pvalue`, `payday_effect_size`, `pct_stores_stationary`, `negbin_alpha`, AIC scores |
+| **Artefacts** | All model artefacts (Bayesian trace, LightGBM boosters, conformal + blender weights, metadata JSON) |
+
+The `mlruns/` directory is created locally and is not committed to git.
+
 ## Development
 
 ```bash
