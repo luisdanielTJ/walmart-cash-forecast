@@ -193,7 +193,7 @@ class BayesianForecaster:
         is_buen_fin: np.ndarray = np.asarray(future_df["is_buen_fin"], dtype=np.float64)
         is_navidad: np.ndarray = np.asarray(future_df["is_navidad_season"], dtype=np.float64)
 
-        post = self._trace.posterior
+        post = self._trace.posterior  # type: ignore[attr-defined]
         # Flatten chains and draws into a single samples axis
         # alpha_s: (n_chains, n_draws, n_stores) → (n_samples, n_stores)
         alpha_s: np.ndarray = post["alpha_s"].values.reshape(-1, post["alpha_s"].shape[-1])

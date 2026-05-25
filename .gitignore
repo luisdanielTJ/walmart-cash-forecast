@@ -33,7 +33,7 @@ Thumbs.db
 .idea/
 
 # Trained model artefacts (large — not committed, reproduced by make train)
-models/
+/models/
 *.nc
 
 # Data processed outputs
