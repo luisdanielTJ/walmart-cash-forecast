@@ -27,6 +27,8 @@ dependencies = [
     "seaborn>=0.12",
     "jupyter>=1.0",
     "ipykernel>=6.0",
+    "h5netcdf>=1.1",
+    "h5py>=3.16.0",
 ]
 
 [project.scripts]
