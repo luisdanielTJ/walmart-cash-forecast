@@ -33,20 +33,37 @@ def train(
     config_path: Optional[Path] = typer.Option(None, help="Path to config.yaml (optional)"),
 ) -> None:
     """Run the full training pipeline: load data -> fit models -> save artefacts."""
+    import logging
+
     import mlflow
 
     from walmart_cash_forecast.config import Config
     from walmart_cash_forecast.pipelines.training import TrainingPipeline
 
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s  %(levelname)-8s  %(name)s  %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
     cfg = Config.from_yaml(config_path) if config_path else Config()
     typer.echo(f"Training with data from {data_dir} -> artefacts to {model_dir}")
+    typer.echo(f"Config: {cfg.bayesian.n_chains} chains x {cfg.bayesian.n_draws} draws, "
+               f"holdout={cfg.bayesian.n_tune} tune steps")
     metadata = TrainingPipeline(cfg, data_dir, model_dir).run()
+    typer.echo("")
     typer.echo(f"Train rows: {metadata['train_rows']}, Calib rows: {metadata['calib_rows']}")
-    typer.echo(f"Blend weights (Bayes, ML): {metadata['blend_weights']}")
-    typer.echo(f"Conformal q_hat: {metadata['conformal_q_hat']:.2f} MXN")
+    typer.echo(f"Blend weights (Bayes / ML): "
+               f"{metadata['blend_weights'][0]:.1%} / {metadata['blend_weights'][1]:.1%}")
+    typer.echo(f"Conformal q_hat: {metadata['conformal_q_hat']:,.0f} MXN")
+    stat = metadata["stat_report"]
+    typer.echo(f"Distribution: {stat['distribution']['best_model']} "
+               f"(NegBin AIC {stat['distribution']['aic_negbin']:,.0f})")
+    typer.echo(f"Payday lift: {stat['payday_effect']['effect_size']:.1%} "
+               f"(p={stat['payday_effect']['pvalue']:.4f})")
     run = mlflow.last_active_run()
     if run:
-        typer.echo(f"MLflow run ID: {run.info.run_id}  (view: mlflow ui)")
+        typer.echo(f"MLflow run: {run.info.run_id}  ->  run `mlflow ui` to explore")
     typer.echo("Training complete.")
 
 

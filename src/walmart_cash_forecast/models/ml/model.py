@@ -36,19 +36,21 @@ from walmart_cash_forecast.config import Config
 # Quantile levels: lower, median, upper
 QUANTILES = (0.1, 0.5, 0.9)
 
-# LightGBM feature columns (must match FeatureEngine output)
+# LightGBM feature columns — names must match FeatureEngine output exactly.
+# Lag/rolling columns use the full FeatureEngine naming convention so the
+# training DataFrame and the prediction DataFrame share identical column names.
 _FEATURE_COLS = [
     "day_of_week",
     "is_payday",
     "is_holiday",
     "is_buen_fin",
     "is_navidad_season",
-    "lag_1",
-    "lag_7",
-    "lag_14",
-    "roll_mean_7",
-    "roll_std_7",
-    "roll_mean_28",
+    "amount_cash_lag_1",
+    "amount_cash_lag_7",
+    "amount_cash_lag_14",
+    "amount_cash_roll7_mean",
+    "amount_cash_roll7_std",
+    "amount_cash_roll28_mean",
     "cash_ratio",
     "days_since_payday",
     "days_until_payday",

@@ -144,14 +144,15 @@ class BayesianForecaster:
             _y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma_obs, observed=log_y, dims="obs")
 
             # Sample with NUTS — target_accept=0.9 reduces divergences from
-            # the hierarchical funnel; fixed seed ensures reproducibility
+            # the hierarchical funnel; fixed seed ensures reproducibility.
+            # progressbar=True shows the per-chain sampling progress in the terminal.
             self._trace = pm.sample(
                 draws=self.config.bayesian.n_draws,
                 tune=self.config.bayesian.n_tune,
                 chains=self.config.bayesian.n_chains,
                 target_accept=self.config.bayesian.target_accept,
                 random_seed=self.config.random_seed,
-                progressbar=False,
+                progressbar=True,
                 return_inferencedata=True,
             )
 

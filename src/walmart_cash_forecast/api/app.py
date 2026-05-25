@@ -26,7 +26,11 @@ from walmart_cash_forecast.pipelines.prediction import PredictionPipeline
 
 
 class StoreDateRequest(BaseModel):
-    """A single store-date prediction request."""
+    """A single store-date prediction request.
+
+    Lag and rolling feature names match FeatureEngine output so they can be
+    passed directly to the ML model without renaming.
+    """
     store_id: str
     date: str = Field(..., description="ISO-8601 date string, e.g. '2024-01-15'")
     day_of_week: int = Field(..., ge=0, le=6, description="0=Monday, 6=Sunday")
@@ -34,13 +38,13 @@ class StoreDateRequest(BaseModel):
     is_holiday: bool = False
     is_buen_fin: bool = False
     is_navidad_season: bool = False
-    # Lag / rolling features — optional; filled with 0 if absent
-    lag_1: float = 0.0
-    lag_7: float = 0.0
-    lag_14: float = 0.0
-    roll_mean_7: float = 0.0
-    roll_std_7: float = 0.0
-    roll_mean_28: float = 0.0
+    # Lag / rolling features — match FeatureEngine column names exactly
+    amount_cash_lag_1: float = 0.0
+    amount_cash_lag_7: float = 0.0
+    amount_cash_lag_14: float = 0.0
+    amount_cash_roll7_mean: float = 0.0
+    amount_cash_roll7_std: float = 0.0
+    amount_cash_roll28_mean: float = 0.0
     cash_ratio: float = 0.5
     days_since_payday: float = 7.0
     days_until_payday: float = 7.0
