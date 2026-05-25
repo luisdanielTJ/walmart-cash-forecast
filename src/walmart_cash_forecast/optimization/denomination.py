@@ -40,21 +40,23 @@ DENOMINATIONS: list[float] = [
     200.00, 500.00, 1_000.00, # large bills
 ]
 
-# Default max units per denomination when not specified in config
+# Default max units per denomination when not specified in config.
+# Limits are set conservatively for a mid-size Bodega format; Supercenter
+# limits are typically higher and should be overridden via config.
 _DEFAULT_LIMITS: dict[float, int] = {
-    0.10:    500,
-    0.20:    500,
-    0.50:    300,
-    1.00:    300,
-    2.00:    200,
-    5.00:    200,
-    10.00:   100,
-    20.00:   100,
-    50.00:    80,
-    100.00:   60,
-    200.00:   40,
-    500.00:   20,
-    1_000.00: 10,
+    0.10:     500,
+    0.20:     500,
+    0.50:     300,
+    1.00:     300,
+    2.00:     200,
+    5.00:     200,
+    10.00:    200,
+    20.00:    200,
+    50.00:    200,
+    100.00:   200,
+    200.00:   200,
+    500.00:   200,
+    1_000.00: 200,
 }
 
 
