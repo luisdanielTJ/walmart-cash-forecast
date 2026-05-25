@@ -1,0 +1,46 @@
+name: Train Model
+
+# Manual trigger only — runs a full training job on demand.
+# Artefacts are uploaded so they can be downloaded for inference or the API.
+on:
+  workflow_dispatch:
+    inputs:
+      data_ref:
+        description: "Branch or tag containing the raw data CSVs"
+        required: false
+        default: "main"
+
+jobs:
+  train:
+    name: Full model training
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.data_ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Train model
+        run: |
+          uv run walmart-forecast train \
+            --data-dir Prueba_Tecnica_DS \
+            --model-dir models/latest
+
+      - name: Upload trained artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-artefacts
+          path: models/latest/
+          retention-days: 30
