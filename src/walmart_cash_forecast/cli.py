@@ -105,8 +105,21 @@ def stats(
     from walmart_cash_forecast.stats.reporter import StatAnalyzer
 
     cfg = Config.from_yaml(config_path) if config_path else Config()  # noqa: F841
-    transactions, _, _ = DataLoader(data_dir).load()
+    transactions, _, calendar = DataLoader(data_dir).load()
     panel = StoreAggregator().aggregate(transactions)
+
+    # Add is_payday — prefer calendar if available, fall back to date formula
+    if calendar is not None and "is_payday" in calendar.columns:
+        panel = panel.merge(calendar[["date", "is_payday"]], on="date", how="left")
+        panel["is_payday"] = panel["is_payday"].fillna(
+            panel["date"].dt.day.isin([15]) | (
+                panel["date"] == panel["date"].dt.to_period("M").dt.to_timestamp("M")
+            )
+        )
+    else:
+        panel["is_payday"] = panel["date"].dt.day.isin([15]) | (
+            panel["date"] == panel["date"].dt.to_period("M").dt.to_timestamp("M")
+        )
 
     report = StatAnalyzer().run(panel, out_dir)
     typer.echo(f"Stats report saved to {out_dir / 'stats_summary.json'}")
