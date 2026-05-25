@@ -33,8 +33,35 @@ Raw CSVs
 - ADF + KPSS joint stationarity test on each store's series
 - STL decomposition + Ljung-Box residual test (period = 7 days)
 - Mann-Whitney U payday effect with effect size
-- R-hat < 1.01 and ESS > 400 convergence checks on MCMC chains
+- R-hat and ESS convergence checks on MCMC chains (tiered: warn at 1.01–1.05, fail at > 1.05)
 - Split conformal prediction (Angelopoulos & Bates 2023) for valid coverage
+
+## Results on Real Data
+
+Trained on 203,958 transaction rows · 80 stores · 425 calendar days (Jan 2023 – Feb 2024).
+
+| Metric | Value |
+|--------|-------|
+| Train rows | 28,076 |
+| Calibration rows | 4,797 |
+| Blend weights (Bayes / ML) | 64.5% / 35.5% |
+| Conformal q̂ (90% interval half-width) | 294,462 MXN |
+| Distribution best fit | Negative Binomial (AIC 554k vs Poisson 22.5M) |
+| NegBin overdispersion α | 0.39 |
+| Payday effect (Mann-Whitney U p-value) | < 0.0001 |
+| Payday median lift | +33.5% (MXN 425k vs MXN 318k on non-paydays) |
+| Stores with stationary series (ADF + KPSS) | 0 / 80 (motivates trend-aware features) |
+| STL residuals white noise (Ljung-Box) | No (p ≈ 0, confirms weekly seasonality) |
+
+**March 2024 forecast summary (80 stores × 30 days = 2,400 predictions):**
+
+| | Mean | Min | Max |
+|-|------|-----|-----|
+| Blended point forecast | 367k MXN | 167k | 1,080k |
+| Conformal lower bound (90%) | 96k MXN | 0 | 785k |
+| Conformal upper bound (90%) | 662k MXN | 462k | 1,374k |
+| Newsvendor q* buffer (75th pct) | 448k MXN | 111k | 1,691k |
+| Denomination pieces per store-day | 448 pieces | — | — |
 
 ## Quick Start
 
@@ -52,15 +79,15 @@ make test
 
 # Train on the provided dataset
 walmart-forecast train \
-  --data-dir Prueba_Tecnica_DS \
+  --data-dir Prueba_Tecnica_DS/Prueba_Tecnica_DS/data \
   --model-dir models/v1
 
 # Generate predictions for a CSV of future store-dates
 walmart-forecast predict \
   --model-dir models/v1 \
-  --future-csv data/future_features.csv \
-  --stores-csv Prueba_Tecnica_DS/stores.csv \
-  --out predictions.csv
+  --future-csv data/future_march2024.csv \
+  --stores-csv Prueba_Tecnica_DS/Prueba_Tecnica_DS/data/stores.csv \
+  --out data/predictions_march2024.csv
 
 # Start the REST API
 walmart-forecast serve --model-dir models/v1 --port 8000

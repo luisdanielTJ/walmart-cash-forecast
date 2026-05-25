@@ -167,6 +167,11 @@ class BayesianForecaster:
         """
         Draw posterior predictive samples for future store-date observations.
 
+        Instead of calling pm.sample_posterior_predictive (which requires the
+        model graph to be in memory), we compute predictions directly from the
+        saved posterior samples via matrix arithmetic. This works because the
+        linear predictor μ_st is an explicit function of the posterior draws.
+
         Args:
             future_df: DataFrame with store_id, is_payday, is_holiday, is_buen_fin,
                        is_navidad_season, day_of_week columns.
@@ -175,35 +180,47 @@ class BayesianForecaster:
             Array of shape (n_posterior_samples, n_rows) with amount_cash samples.
             All values are positive (inverse log1p applied).
         """
-        if self._model is None or self._trace is None:
-            raise RuntimeError("Call fit() before predict().")
+        if self._trace is None:
+            raise RuntimeError("Call fit() or load() before predict().")
 
         # Encode future data using the same mappings fitted during training
-        store_idx = future_df["store_id"].map(self._store_to_idx).values.astype(int)
-        dow = future_df["day_of_week"].values.astype(int)
-        is_payday = future_df["is_payday"].astype(float).values
-        is_holiday = future_df["is_holiday"].astype(float).values
-        is_buen_fin = future_df["is_buen_fin"].astype(float).values
-        is_navidad = future_df["is_navidad_season"].astype(float).values
+        store_idx: np.ndarray = np.asarray(
+            future_df["store_id"].map(self._store_to_idx), dtype=np.intp
+        )
+        dow: np.ndarray = np.asarray(future_df["day_of_week"], dtype=np.intp)
+        is_payday: np.ndarray = np.asarray(future_df["is_payday"], dtype=np.float64)
+        is_holiday: np.ndarray = np.asarray(future_df["is_holiday"], dtype=np.float64)
+        is_buen_fin: np.ndarray = np.asarray(future_df["is_buen_fin"], dtype=np.float64)
+        is_navidad: np.ndarray = np.asarray(future_df["is_navidad_season"], dtype=np.float64)
 
-        with self._model:
-            pm.set_data({
-                "store_idx": store_idx,
-                "dow": dow,
-                "is_payday": is_payday,
-                "is_holiday": is_holiday,
-                "is_buen_fin": is_buen_fin,
-                "is_navidad": is_navidad,
-            })
-            ppc = pm.sample_posterior_predictive(
-                self._trace,
-                random_seed=self.config.random_seed,
-                progressbar=False,
-            )
+        post = self._trace.posterior
+        # Flatten chains and draws into a single samples axis
+        # alpha_s: (n_chains, n_draws, n_stores) → (n_samples, n_stores)
+        alpha_s: np.ndarray = post["alpha_s"].values.reshape(-1, post["alpha_s"].shape[-1])
+        # beta_dow: (n_samples, 7)
+        beta_dow: np.ndarray = post["beta_dow"].values.reshape(-1, 7)
+        # scalar coefficients: (n_samples,)
+        beta_payday: np.ndarray = post["beta_payday"].values.reshape(-1)
+        beta_holiday: np.ndarray = post["beta_holiday"].values.reshape(-1)
+        beta_buen_fin: np.ndarray = post["beta_buen_fin"].values.reshape(-1)
+        beta_navidad: np.ndarray = post["beta_navidad"].values.reshape(-1)
+        sigma_obs: np.ndarray = post["sigma_obs"].values.reshape(-1)
 
-        # y_obs samples: shape (n_chains, n_draws, n_obs) → reshape to (n_samples, n_obs)
-        log_samples = ppc.posterior_predictive["y_obs"].values
-        log_samples = log_samples.reshape(-1, log_samples.shape[-1])
+        # μ_st = α_s[store] + β_dow[dow] + scalar effects
+        # shapes: (n_samples, n_obs) via broadcasting
+        mu = (
+            alpha_s[:, store_idx]                           # (n_samples, n_obs)
+            + beta_dow[:, dow]                              # (n_samples, n_obs)
+            + np.outer(beta_payday, is_payday)              # (n_samples, n_obs)
+            + np.outer(beta_holiday, is_holiday)
+            + np.outer(beta_buen_fin, is_buen_fin)
+            + np.outer(beta_navidad, is_navidad)
+        )
+
+        # Sample from Normal(μ, σ_obs) — σ_obs is (n_samples,), mu is (n_samples, n_obs)
+        rng = np.random.default_rng(self.config.random_seed)
+        noise = rng.standard_normal(mu.shape) * sigma_obs[:, np.newaxis]
+        log_samples = mu + noise
         # Inverse log1p: recover original MXN scale
         return np.expm1(log_samples)
 

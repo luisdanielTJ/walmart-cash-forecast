@@ -41,22 +41,22 @@ DENOMINATIONS: list[float] = [
 ]
 
 # Default max units per denomination when not specified in config.
-# Limits are set conservatively for a mid-size Bodega format; Supercenter
-# limits are typically higher and should be overridden via config.
+# Sized for a high-volume Supercenter float (~$5M MXN capacity in large bills).
+# Bodega/Express formats with smaller floats should override via config.yaml.
 _DEFAULT_LIMITS: dict[float, int] = {
-    0.10:     500,
-    0.20:     500,
-    0.50:     300,
-    1.00:     300,
-    2.00:     200,
-    5.00:     200,
-    10.00:    200,
-    20.00:    200,
-    50.00:    200,
-    100.00:   200,
-    200.00:   200,
-    500.00:   200,
-    1_000.00: 200,
+    0.10:      500,
+    0.20:      500,
+    0.50:      300,
+    1.00:      300,
+    2.00:      200,
+    5.00:      200,
+    10.00:     500,
+    20.00:    1_000,
+    50.00:    1_000,
+    100.00:   2_000,
+    200.00:   3_000,
+    500.00:   5_000,
+    1_000.00: 5_000,
 }
 
 

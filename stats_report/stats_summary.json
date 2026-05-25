@@ -1,0 +1,425 @@
+{
+  "distribution": {
+    "best_model": "negbin",
+    "aic_poisson": 22495565.33,
+    "aic_negbin": 554065.08,
+    "is_overdispersed": true,
+    "negbin_alpha": 0.3904
+  },
+  "stationarity": {
+    "pct_stores_stationary": 0.0,
+    "per_store": {
+      "STR_001": {
+        "adf_pvalue": 0.0392,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_002": {
+        "adf_pvalue": 0.036,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_003": {
+        "adf_pvalue": 0.0553,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_004": {
+        "adf_pvalue": 0.0516,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_005": {
+        "adf_pvalue": 0.0499,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_006": {
+        "adf_pvalue": 0.0047,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_007": {
+        "adf_pvalue": 0.0508,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_008": {
+        "adf_pvalue": 0.0683,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_009": {
+        "adf_pvalue": 0.0477,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_010": {
+        "adf_pvalue": 0.0592,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_011": {
+        "adf_pvalue": 0.0519,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_012": {
+        "adf_pvalue": 0.0004,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_013": {
+        "adf_pvalue": 0.0311,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_014": {
+        "adf_pvalue": 0.0567,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_015": {
+        "adf_pvalue": 0.0566,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_016": {
+        "adf_pvalue": 0.0241,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_017": {
+        "adf_pvalue": 0.027,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_018": {
+        "adf_pvalue": 0.0241,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_019": {
+        "adf_pvalue": 0.0354,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_020": {
+        "adf_pvalue": 0.0687,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_021": {
+        "adf_pvalue": 0.0471,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_022": {
+        "adf_pvalue": 0.0397,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_023": {
+        "adf_pvalue": 0.0625,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_024": {
+        "adf_pvalue": 0.0963,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_025": {
+        "adf_pvalue": 0.0557,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_026": {
+        "adf_pvalue": 0.0543,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_027": {
+        "adf_pvalue": 0.0358,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_028": {
+        "adf_pvalue": 0.0462,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_029": {
+        "adf_pvalue": 0.0588,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_030": {
+        "adf_pvalue": 0.1301,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_031": {
+        "adf_pvalue": 0.0663,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_032": {
+        "adf_pvalue": 0.0998,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_033": {
+        "adf_pvalue": 0.0006,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_034": {
+        "adf_pvalue": 0.0705,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_035": {
+        "adf_pvalue": 0.0454,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_036": {
+        "adf_pvalue": 0.0616,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_037": {
+        "adf_pvalue": 0.0232,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_038": {
+        "adf_pvalue": 0.101,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_039": {
+        "adf_pvalue": 0.1207,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_040": {
+        "adf_pvalue": 0.0822,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_041": {
+        "adf_pvalue": 0.0985,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_042": {
+        "adf_pvalue": 0.107,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_043": {
+        "adf_pvalue": 0.0457,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_044": {
+        "adf_pvalue": 0.0733,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_045": {
+        "adf_pvalue": 0.0004,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_046": {
+        "adf_pvalue": 0.0406,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_047": {
+        "adf_pvalue": 0.0589,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_048": {
+        "adf_pvalue": 0.0806,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_049": {
+        "adf_pvalue": 0.0399,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_050": {
+        "adf_pvalue": 0.062,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_051": {
+        "adf_pvalue": 0.0709,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_052": {
+        "adf_pvalue": 0.1042,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_053": {
+        "adf_pvalue": 0.0569,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_054": {
+        "adf_pvalue": 0.0756,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_055": {
+        "adf_pvalue": 0.0244,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_056": {
+        "adf_pvalue": 0.0847,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_057": {
+        "adf_pvalue": 0.1512,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_058": {
+        "adf_pvalue": 0.0554,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_059": {
+        "adf_pvalue": 0.0965,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_060": {
+        "adf_pvalue": 0.1951,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_061": {
+        "adf_pvalue": 0.055,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_062": {
+        "adf_pvalue": 0.1544,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_063": {
+        "adf_pvalue": 0.1195,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_064": {
+        "adf_pvalue": 0.0545,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_065": {
+        "adf_pvalue": 0.1544,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_066": {
+        "adf_pvalue": 0.0944,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_067": {
+        "adf_pvalue": 0.2058,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_068": {
+        "adf_pvalue": 0.0972,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_069": {
+        "adf_pvalue": 0.068,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_070": {
+        "adf_pvalue": 0.2173,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_071": {
+        "adf_pvalue": 0.1257,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_072": {
+        "adf_pvalue": 0.0944,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_073": {
+        "adf_pvalue": 0.0706,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_074": {
+        "adf_pvalue": 0.1029,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_075": {
+        "adf_pvalue": 0.0819,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_076": {
+        "adf_pvalue": 0.0573,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_077": {
+        "adf_pvalue": 0.0992,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_078": {
+        "adf_pvalue": 0.1423,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_079": {
+        "adf_pvalue": 0.0856,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      },
+      "STR_080": {
+        "adf_pvalue": 0.0572,
+        "kpss_pvalue": 0.01,
+        "is_stationary": false
+      }
+    }
+  },
+  "decomposition": {
+    "example_store": "STR_001",
+    "ljungbox_pvalue": 0.0,
+    "residuals_are_white_noise": false
+  },
+  "payday_effect": {
+    "pvalue": 0.0,
+    "effect_size": 0.3352,
+    "payday_median": 425013.99,
+    "nonpayday_median": 318317.8
+  }
+}
