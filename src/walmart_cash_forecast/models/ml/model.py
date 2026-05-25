@@ -96,11 +96,11 @@ class MLForecaster:
         # Resolve available features — lag columns may be absent for very short
         # series passed during unit tests
         self._feature_cols = [c for c in _FEATURE_COLS if c in df.columns]
-        X: npt.NDArray[np.float32] = df[self._feature_cols].to_numpy(dtype=np.float32)
+        x_mat: npt.NDArray[np.float32] = df[self._feature_cols].to_numpy(dtype=np.float32)
         y: npt.NDArray[np.float32] = df[_TARGET].to_numpy(dtype=np.float32)
 
         for q in QUANTILES:
-            best_params = self._tune(X, y, q)
+            best_params = self._tune(x_mat, y, q)
             reg = lgb.LGBMRegressor(
                 objective="quantile",
                 alpha=q,
@@ -109,7 +109,7 @@ class MLForecaster:
                 verbose=-1,
                 **best_params,
             )
-            reg.fit(X, y)
+            reg.fit(x_mat, y)
             # Store the underlying Booster — avoids sklearn fitted-state issues on load
             self._models[q] = reg.booster_
 
@@ -130,9 +130,9 @@ class MLForecaster:
         if quantile not in self._models:
             raise ValueError(f"No model for quantile={quantile}. Choose from {list(self._models)}")
 
-        X: npt.NDArray[np.float32] = future_df[self._feature_cols].to_numpy(dtype=np.float32)
+        x_mat: npt.NDArray[np.float32] = future_df[self._feature_cols].to_numpy(dtype=np.float32)
         # np.asarray ensures a dense ndarray regardless of LightGBM's return type union
-        preds = np.asarray(self._models[quantile].predict(X), dtype=np.float64)
+        preds = np.asarray(self._models[quantile].predict(x_mat), dtype=np.float64)
         # Quantile regression can theoretically predict negative values; clip
         # to zero since cash demand is strictly non-negative
         return np.maximum(preds, 0.0)
@@ -176,7 +176,7 @@ class MLForecaster:
 
     def _tune(
         self,
-        X: npt.NDArray[np.float32],
+        x_mat: npt.NDArray[np.float32],
         y: npt.NDArray[np.float32],
         q: float,
     ) -> dict:
@@ -187,7 +187,7 @@ class MLForecaster:
         data leakage: earlier folds train on past data and validate on future.
 
         Args:
-            X: Feature matrix, shape (n, p).
+            x_mat: Feature matrix, shape (n, p).
             y: Target vector, shape (n,).
             q: Quantile level for this model.
 
@@ -208,7 +208,7 @@ class MLForecaster:
                 "reg_lambda": trial.suggest_float("reg_lambda", 1e-4, 10.0, log=True),
             }
             pinball_losses = []
-            for train_idx, val_idx in tscv.split(X):
+            for train_idx, val_idx in tscv.split(x_mat):
                 model = lgb.LGBMRegressor(
                     objective="quantile",
                     alpha=q,
@@ -219,8 +219,8 @@ class MLForecaster:
                 )
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
-                    model.fit(X[train_idx], y[train_idx])
-                preds: npt.NDArray[np.float64] = model.predict(X[val_idx])
+                    model.fit(x_mat[train_idx], y[train_idx])
+                preds: npt.NDArray[np.float64] = model.predict(x_mat[val_idx])
                 # Pinball loss: L_q(y, ŷ) = q·max(y-ŷ, 0) + (1-q)·max(ŷ-y, 0)
                 errors: npt.NDArray[np.float64] = y[val_idx].astype(np.float64) - preds
                 loss = float(np.mean(np.where(errors >= 0, q * errors, (q - 1.0) * errors)))

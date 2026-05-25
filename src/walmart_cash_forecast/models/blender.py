@@ -67,9 +67,9 @@ class ModelBlender:
         Returns:
             self (for chaining).
         """
-        X = np.column_stack([y_bayes, y_ml])
+        x_mat = np.column_stack([y_bayes, y_ml])
         ridge = Ridge(alpha=self.ridge_alpha, fit_intercept=False)
-        ridge.fit(X, y_true)
+        ridge.fit(x_mat, y_true)
         self._ridge = ridge
 
         # Softmax-normalise the raw coefficients so weights are ≥ 0 and sum to 1.
