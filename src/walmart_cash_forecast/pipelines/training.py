@@ -228,5 +228,9 @@ class TrainingPipeline:
         mlflow.log_param("dist_best_model", stat_report["distribution"]["best_model"])
         mlflow.log_artifacts(str(self.model_dir), artifact_path="model_artefacts")
 
+        # Register in Model Registry so the Models tab shows a versioned entry
+        run_id = mlflow.active_run().info.run_id  # type: ignore[union-attr]
+        mlflow.register_model(f"runs:/{run_id}/model_artefacts", "walmart-cash-forecast")
+
         logger.info("Training complete. Artefacts saved to %s", self.model_dir)
         return metadata
