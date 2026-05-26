@@ -35,7 +35,7 @@ jobs:
       - name: Train model
         run: |
           uv run walmart-forecast train \
-            --data-dir Prueba_Tecnica_DS \
+            --data-dir data/raw \
             --model-dir models/latest
 
       - name: Upload trained artefacts

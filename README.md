@@ -79,14 +79,14 @@ make test
 
 # Train on the provided dataset
 walmart-forecast train \
-  --data-dir Prueba_Tecnica_DS/Prueba_Tecnica_DS/data \
+  --data-dir data/raw \
   --model-dir models/v1
 
 # Generate predictions for a CSV of future store-dates
 walmart-forecast predict \
   --model-dir models/v1 \
   --future-csv data/future_march2024.csv \
-  --stores-csv Prueba_Tecnica_DS/Prueba_Tecnica_DS/data/stores.csv \
+  --stores-csv data/raw/stores.csv \
   --out data/predictions_march2024.csv
 
 # Start the REST API

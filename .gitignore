@@ -45,3 +45,9 @@ data/processed/
 
 # mypy cache
 .mypy_cache/
+
+# Original assignment zip folder (raw materials from interviewer, not part of solution)
+Prueba_Tecnica_DS/
+
+# Superpowers planning docs (internal tooling, not part of deliverable)
+docs/
