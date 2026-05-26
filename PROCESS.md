@@ -1,15 +1,18 @@
 # Process — Walmart Mexico Cash Change Forecasting
 
-This document records the reasoning, decisions, and tradeoffs made during the
-development of the cash-change forecasting system.
+## Summary
+
+Given retail transaction data from 80 stores across Mexico, I identified the core operational pain point — stores running out of change mid-shift or holding excess cash overnight — and framed it as a newsvendor optimization problem. I built a forecasting pipeline combining a Bayesian hierarchical model and LightGBM quantile regression, wrapped with conformal prediction intervals, and connected the output to a denomination mix recommendation grounded in Banco de México 2023 circulation data. The result is a daily, store-level, operationally actionable recommendation: not just a forecast in MXN, but the exact number of $200 bills, $100 bills, $50 bills, and coins a store should prepare each morning.
+
+This document records the reasoning, decisions, and tradeoffs made during development.
 
 ---
 
 ## 1. Problem Framing
 
-**Business pain point** (confirmed by Walmart Mexico Director of Data Science):
-stores either run out of change mid-shift, halting transactions, or hold excess
-cash overnight creating a security and capital inefficiency risk.
+**Business pain point**: stores either run out of change mid-shift, halting
+transactions, or hold excess cash overnight creating a security and capital
+inefficiency risk.
 
 **Formalisation**: This is a **newsvendor problem** — a single-period inventory
 problem where the demand distribution is uncertain. The optimal stocking level
