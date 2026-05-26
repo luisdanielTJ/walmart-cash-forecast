@@ -148,7 +148,7 @@ México 2023 Annual Report on Banknote and Coin Circulation**:
 | $100 | 33% | Second most circulated |
 | $50  | 13% | Mid-size change |
 | $20  | 8%  | Petty change |
-| $500 | 4%  | Occasional large-purchase change |
+| $500 | 0%  | Not stocked — stores receive them but do not dispense them as change |
 | Coins ($0.10–$10) | Fixed counts | Operational minimum per register, not volume-driven |
 | $1,000 | 0% | Not stocked — most MX retailers refuse them |
 

@@ -83,15 +83,15 @@ Trained on 203,958 transaction rows · 80 stores · 425 calendar days (Jan 2023 
 | Stores with stationary series (ADF + KPSS) | 0 / 80 (motivates trend-aware features) |
 | STL residuals white noise (Ljung-Box) | No (p ≈ 0, confirms weekly seasonality) |
 
-**March 2024 forecast summary (80 stores × 30 days = 2,400 predictions):**
+**March 2024 forecast summary (80 stores × 31 days = 2,480 predictions):**
 
 | | Mean | Min | Max |
 |-|------|-----|-----|
-| Blended point forecast | 367k MXN | 167k | 1,080k |
-| Conformal lower bound (90%) | 96k MXN | 0 | 785k |
-| Conformal upper bound (90%) | 662k MXN | 462k | 1,374k |
-| Newsvendor q* buffer (75th pct) | 448k MXN | 111k | 1,691k |
-| Denomination pieces per store-day | 448 pieces | — | — |
+| Blended point forecast | 392k MXN | 98k | 1,642k |
+| Conformal lower bound (90%) | 157k MXN | 0 | 1,406k |
+| Conformal upper bound (90%) | 628k MXN | 333k | 1,877k |
+| Newsvendor q* buffer (75th pct) | 457k MXN | 111k | 1,979k |
+| Denomination pieces per store-day | 1,541 pieces | 1,436 | 1,991 |
 
 ## Quick Start
 
@@ -175,7 +175,7 @@ Example response:
 }
 ```
 
-Interactive docs: `http://localhost:8000/docs`
+Interactive docs: `http://127.0.0.1:8000/docs`
 
 ## MLflow Experiment Tracking
 
@@ -185,7 +185,7 @@ at `models/mlflow.db`.
 ```bash
 # After running walmart-forecast train ..., open the UI:
 uv run mlflow ui --backend-store-uri sqlite:///models/mlflow.db
-# → http://localhost:5000
+# → http://127.0.0.1:5000
 ```
 
 Logged per run:

@@ -6,13 +6,13 @@ WORKDIR /app
 RUN pip install uv
 
 COPY pyproject.toml .
+COPY uv.lock .
 COPY src/ src/
 COPY config.yaml .
 COPY data/ data/
-COPY artifacts/ artifacts/
 
 # Install production dependencies only (no dev extras)
 RUN uv sync --no-dev
 
 EXPOSE 8000
-CMD ["uv", "run", "uvicorn", "walmart_cash_forecast.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "walmart-forecast", "serve", "--model-dir", "/app/models/v1", "--port", "8000"]

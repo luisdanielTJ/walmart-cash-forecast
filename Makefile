@@ -4,10 +4,10 @@ install:
 	uv sync --all-extras
 
 train:
-	uv run walmart-forecast train
+	uv run walmart-forecast train --data-dir data/raw --model-dir models/v1
 
 predict:
-	uv run walmart-forecast predict --days 7
+	uv run walmart-forecast predict --model-dir models/v1 --future-csv data/future_march2024.csv --stores-csv data/raw/stores.csv --out data/predictions_march2024.csv
 
 test:
 	uv run pytest
