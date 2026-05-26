@@ -69,6 +69,10 @@ class TrainingPipeline:
         """
         self.model_dir.mkdir(parents=True, exist_ok=True)
 
+        # Use SQLite so the tracking store is a single portable file.
+        # The filesystem backend (mlruns/) is deprecated in MLflow >= 2.20.
+        db_path = (self.model_dir.parent / "mlflow.db").resolve()
+        mlflow.set_tracking_uri(f"sqlite:///{db_path}")
         mlflow.set_experiment("walmart-cash-forecast")
         with mlflow.start_run():
             return self._run()
