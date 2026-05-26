@@ -210,3 +210,4 @@ All statistical design decisions (model structure, prior choices, newsvendor fra
 3. **Store clusters**: k-means on amount_cash time-series features to group stores with similar demand patterns, then fit separate models per cluster.
 4. **Dashboard**: real-time Grafana/Streamlit dashboard showing forecast vs. actual and alert when q* would have been violated.
 5. **Multi-day horizon**: currently 1-day ahead; extend to 7-day rolling horizon with recalibration.
+6. **Self-contained API input**: the current `/predict` endpoint requires the caller to pre-compute lag and rolling features (lag_1, lag_7, roll7_mean, etc.) before calling the API, which is impractical for non-technical users. A better design would accept raw recent transaction history and compute features internally — the caller sends the last 30 days of cash amounts per store and the API derives all features itself.
