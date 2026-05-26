@@ -36,6 +36,36 @@ Raw CSVs
 - R-hat and ESS convergence checks on MCMC chains (tiered: warn at 1.01–1.05, fail at > 1.05)
 - Split conformal prediction (Angelopoulos & Bates 2023) for valid coverage
 
+## Key Findings
+
+Four statistical findings from the EDA directly shaped every modeling decision.
+
+### 1. Cash demand is right-skewed — a lognormal model is appropriate
+
+Most days cluster around a moderate amount, but paydays and holidays push demand far to the right. Log-transforming the target produces a near-normal distribution, justifying the lognormal likelihood in the Bayesian model.
+
+![Cash demand distribution](stats_report/distribution.png)
+
+### 2. Strong weekly seasonality — day-of-week is a critical feature
+
+Weekends carry ~40% higher cash demand than mid-week. Friday spikes because customers withdraw cash ahead of the weekend. This confirmed `day_of_week` as a dedicated coefficient in the Bayesian model.
+
+![Cash demand by day of week](stats_report/day_of_week.png)
+
+### 3. Quincena paydays produce a significant and measurable lift
+
+Mann-Whitney U test confirms the payday effect is real and large — not noise. Payday days carry +33.5% higher median cash demand (MXN 425k vs MXN 318k), justifying `is_payday` as a dedicated model feature.
+
+![Payday effect](stats_report/payday_effect.png)
+
+### 4. No store series is stationary — trend-aware features are necessary
+
+ADF + KPSS joint stationarity test on all 80 store series: 0 / 80 stationary. Rather than differencing, the model uses lag and rolling features (lag_1, lag_7, roll28_mean) to capture local trend implicitly.
+
+![STL decomposition](stats_report/stl_decomposition.png)
+
+---
+
 ## Results on Real Data
 
 Trained on 203,958 transaction rows · 80 stores · 425 calendar days (Jan 2023 – Feb 2024).
