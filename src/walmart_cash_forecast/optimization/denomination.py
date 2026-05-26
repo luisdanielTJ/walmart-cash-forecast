@@ -116,7 +116,9 @@ class DenominationSolver:
         minimums: dict[float, int] | None = None,
     ) -> None:
         self.limits: dict[float, int] = limits if limits is not None else dict(_DEFAULT_LIMITS)
-        self.minimums: dict[float, int] = minimums if minimums is not None else dict(_DEFAULT_MINIMUMS)
+        self.minimums: dict[float, int] = (
+            minimums if minimums is not None else dict(_DEFAULT_MINIMUMS)
+        )
 
     def solve(
         self,
@@ -144,10 +146,14 @@ class DenominationSolver:
 
         # Decision variables: integer count for each denomination.
         # lowBound = minimum floor so cashiers always have small bills for change.
+        # Floor is capped by the upBound so custom tight limits don't crash PuLP.
         vars_: dict[float, pulp.LpVariable] = {
             d: pulp.LpVariable(
                 f"x_{int(d * 100):05d}",   # e.g. x_00010 for $0.10
-                lowBound=self.minimums.get(d, 0),
+                lowBound=min(
+                    self.minimums.get(d, 0),
+                    self.limits.get(d, _DEFAULT_LIMITS.get(d, 1000)),
+                ),
                 upBound=self.limits.get(d, _DEFAULT_LIMITS.get(d, 1000)),
                 cat="Integer",
             )

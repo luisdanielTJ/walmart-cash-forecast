@@ -12,12 +12,16 @@ def test_solve_covers_target():
     assert result.status == "Optimal"
 
 
-def test_solve_minimises_pieces():
-    """Naive strategy (all small coins) would use far more pieces."""
+def test_solve_includes_minimum_floors():
+    """Solver must include minimum coin/bill floors for operational change-making."""
     solver = DenominationSolver()
     result = solver.solve("STR_001", pd.Timestamp("2024-01-15"), target=1_000.0)
-    # With $1000 bills available, optimal mix needs at most 1 piece
-    assert result.total_pieces <= 10
+    # Minimum floors guarantee small denominations are always present
+    assert result.mix.get(0.10, 0) >= 200
+    assert result.mix.get(1.00, 0) >= 300
+    assert result.mix.get(100.00, 0) >= 200
+    # ILP still minimises pieces above the floors (no unnecessary extras)
+    assert result.total_pieces == sum(result.mix.values())
 
 
 def test_solve_all_pieces_positive():
