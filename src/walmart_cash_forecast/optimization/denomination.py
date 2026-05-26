@@ -51,12 +51,12 @@ _DEFAULT_LIMITS: dict[float, int] = {
     2.00:      200,
     5.00:      200,
     10.00:     500,
-    20.00:    1_000,
-    50.00:    1_500,
-    100.00:   3_000,
-    200.00:   4_000,
-    500.00:   5_000,
-    1_000.00:   100,  # few $1000 bills — many MX stores refuse them
+    20.00:    1_500,
+    50.00:    2_000,
+    100.00:   5_000,  # primary large denomination for change-making
+    200.00:   6_000,  # covers Supercenter targets (~$1.2M in $200s alone)
+    500.00:       0,  # stores receive these from customers, don't stock them
+    1_000.00:     0,  # stores receive these from customers, don't stock them
 }
 
 # Minimum units guaranteed in every float regardless of target size.
@@ -64,19 +64,19 @@ _DEFAULT_LIMITS: dict[float, int] = {
 # which is mathematically optimal but operationally wrong: cashiers need
 # small bills and coins to make change for customers.
 _DEFAULT_MINIMUMS: dict[float, int] = {
-    0.10:  200,   # $20   — centavo change for $x.90 prices
-    0.20:  200,   # $40   — centavo change for $x.80 prices
-    0.50:  200,   # $100  — half-peso change
-    1.00:  300,   # $300  — peso coins for every transaction
-    2.00:  200,   # $400  — common small change
-    5.00:  200,   # $1,000 — frequent change denomination
-    10.00: 300,   # $3,000 — very common change denomination
-    20.00: 100,   # $2,000  — petty change
-    50.00: 100,   # $5,000  — small transactions
-    100.00: 200,  # $20,000 — most common bill
-    200.00: 100,  # $20,000 — mid-range transactions
-    500.00:  50,  # $25,000 — larger purchases
-    1_000.00: 0,  # fill the rest with $1000s
+    0.10:  200,   # centavo change for $x.90 prices
+    0.20:  200,   # centavo change for $x.80 prices
+    0.50:  200,   # half-peso change
+    1.00:  300,   # peso coins for every transaction
+    2.00:  200,   # common small change
+    5.00:  200,   # frequent change denomination
+    10.00: 300,   # very common change denomination
+    20.00: 200,   # petty change
+    50.00: 200,   # small transactions
+    100.00: 300,  # most common bill in MX retail
+    200.00: 200,  # mid-range transactions
+    500.00:   0,
+    1_000.00: 0,
 }
 
 
