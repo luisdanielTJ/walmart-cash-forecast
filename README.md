@@ -74,7 +74,7 @@ uv sync
 
 **Step 2 — Train the model** (runs Bayesian + LightGBM + blender, ~10–20 min)
 ```bash
-walmart-forecast train --data-dir data/raw --model-dir models/v1
+uv run walmart-forecast train --data-dir data/raw --model-dir models/v1
 ```
 
 **Step 3 — Generate March 2024 predictions**
