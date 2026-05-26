@@ -63,6 +63,10 @@ class Config:
     newsvendor: NewsvendorConfig = field(default_factory=NewsvendorConfig)
     conformal: ConformalConfig = field(default_factory=ConformalConfig)
     denomination_limits: dict = field(default_factory=dict)
+    # q_star is the total cash buffer (mostly in the safe). The denomination
+    # mix represents the registers' change fund only, which is a small fraction
+    # of the total. Cap avoids unrealistic bill counts in the ILP output.
+    denomination_fund_cap: float = 100_000.0  # MXN — max denomination target
 
     @classmethod
     def from_yaml(cls, path: Path) -> "Config":
@@ -78,4 +82,5 @@ class Config:
             newsvendor=NewsvendorConfig(**data.get("newsvendor", {})),
             conformal=ConformalConfig(**data.get("conformal", {})),
             denomination_limits=data.get("denomination_limits", {}),
+            denomination_fund_cap=data.get("denomination_fund_cap", 100_000.0),
         )
