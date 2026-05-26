@@ -67,31 +67,37 @@ Trained on 203,958 transaction rows · 80 stores · 425 calendar days (Jan 2023 
 
 ### Option 1 — Local (uv)
 
+**Step 1 — Install dependencies**
 ```bash
-# Install uv (https://docs.astral.sh/uv/getting-started/installation/)
-pip install uv
+uv sync
+```
 
-# Install all dependencies
-make install          # equivalent: uv sync --extra dev
+**Step 2 — Train the model** (runs Bayesian + LightGBM + blender, ~10–20 min)
+```bash
+walmart-forecast train --data-dir data/raw --model-dir models/v1
+```
 
-# Run the full test suite
-make test
-
-# Train on the provided dataset
-walmart-forecast train \
-  --data-dir data/raw \
-  --model-dir models/v1
-
-# Generate predictions for a CSV of future store-dates
-walmart-forecast predict \
+**Step 3 — Generate March 2024 predictions**
+```bash
+uv run walmart-forecast predict \
   --model-dir models/v1 \
   --future-csv data/future_march2024.csv \
   --stores-csv data/raw/stores.csv \
   --out data/predictions_march2024.csv
-
-# Start the REST API
-walmart-forecast serve --model-dir models/v1 --port 8000
 ```
+
+**Step 4 — Inspect training runs in MLflow**
+```bash
+uv run mlflow ui --backend-store-uri sqlite:///models/mlflow.db
+```
+Then open `http://127.0.0.1:5000` in your browser.
+> Note: on Windows, use `127.0.0.1` — `localhost` may not resolve correctly.
+
+**Step 5 — Start the REST API**
+```bash
+uv run walmart-forecast serve --model-dir models/v1 --port 8000
+```
+Then open `http://127.0.0.1:8000/docs` for the interactive API explorer.
 
 ### Option 2 — Docker
 
