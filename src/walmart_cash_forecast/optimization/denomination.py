@@ -59,6 +59,26 @@ _DEFAULT_LIMITS: dict[float, int] = {
     1_000.00: 5_000,
 }
 
+# Minimum units guaranteed in every float regardless of target size.
+# Without floors the ILP always picks the largest denomination only,
+# which is mathematically optimal but operationally wrong: cashiers need
+# small bills and coins to make change for customers.
+_DEFAULT_MINIMUMS: dict[float, int] = {
+    0.10:   0,
+    0.20:   0,
+    0.50:   0,
+    1.00:   0,
+    2.00:   0,
+    5.00:   0,
+    10.00:  0,
+    20.00:  100,   # $2,000  — petty change
+    50.00:  100,   # $5,000  — small transactions
+    100.00: 200,   # $20,000 — most common bill
+    200.00: 100,   # $20,000 — mid-range transactions
+    500.00:  50,   # $25,000 — larger purchases
+    1_000.00: 0,   # fill the rest with $1000s
+}
+
 
 @dataclass
 class DenominationResult:
@@ -90,8 +110,13 @@ class DenominationSolver:
             _DEFAULT_LIMITS; can be overridden per store format via config.
     """
 
-    def __init__(self, limits: dict[float, int] | None = None) -> None:
+    def __init__(
+        self,
+        limits: dict[float, int] | None = None,
+        minimums: dict[float, int] | None = None,
+    ) -> None:
         self.limits: dict[float, int] = limits if limits is not None else dict(_DEFAULT_LIMITS)
+        self.minimums: dict[float, int] = minimums if minimums is not None else dict(_DEFAULT_MINIMUMS)
 
     def solve(
         self,
@@ -117,11 +142,12 @@ class DenominationSolver:
         """
         prob = pulp.LpProblem("denomination_mix", pulp.LpMinimize)
 
-        # Decision variables: integer count for each denomination
+        # Decision variables: integer count for each denomination.
+        # lowBound = minimum floor so cashiers always have small bills for change.
         vars_: dict[float, pulp.LpVariable] = {
             d: pulp.LpVariable(
                 f"x_{int(d * 100):05d}",   # e.g. x_00010 for $0.10
-                lowBound=0,
+                lowBound=self.minimums.get(d, 0),
                 upBound=self.limits.get(d, _DEFAULT_LIMITS.get(d, 1000)),
                 cat="Integer",
             )
