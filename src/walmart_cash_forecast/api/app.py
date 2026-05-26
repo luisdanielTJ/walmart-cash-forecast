@@ -67,6 +67,20 @@ class StorePrediction(BaseModel):
     lower: float
     upper: float
     q_star: float
+    # Denomination mix for the register change fund (pieces per denomination)
+    denom_0_10: int = 0
+    denom_0_20: int = 0
+    denom_0_50: int = 0
+    denom_1_00: int = 0
+    denom_2_00: int = 0
+    denom_5_00: int = 0
+    denom_10_00: int = 0
+    denom_20_00: int = 0
+    denom_50_00: int = 0
+    denom_100_00: int = 0
+    denom_200_00: int = 0
+    denom_500_00: int = 0
+    denom_1000_00: int = 0
 
 
 class PredictResponse(BaseModel):
@@ -169,6 +183,19 @@ def create_app(config: Config, model_dir: str | Path) -> FastAPI:
                 lower=round(float(row["lower"]), 2),
                 upper=round(float(row["upper"]), 2),
                 q_star=round(float(row["q_star"]), 2),
+                denom_0_10=int(row.get("denom_0.10", 0)),
+                denom_0_20=int(row.get("denom_0.20", 0)),
+                denom_0_50=int(row.get("denom_0.50", 0)),
+                denom_1_00=int(row.get("denom_1.00", 0)),
+                denom_2_00=int(row.get("denom_2.00", 0)),
+                denom_5_00=int(row.get("denom_5.00", 0)),
+                denom_10_00=int(row.get("denom_10.00", 0)),
+                denom_20_00=int(row.get("denom_20.00", 0)),
+                denom_50_00=int(row.get("denom_50.00", 0)),
+                denom_100_00=int(row.get("denom_100.00", 0)),
+                denom_200_00=int(row.get("denom_200.00", 0)),
+                denom_500_00=int(row.get("denom_500.00", 0)),
+                denom_1000_00=int(row.get("denom_1000.00", 0)),
             )
             for _, row in result_df.iterrows()
         ]
