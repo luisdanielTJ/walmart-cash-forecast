@@ -18,46 +18,4 @@ newsvendor:
 conformal:
   alpha: 0.1           # target miscoverage rate → 90% prediction intervals
 
-denomination_limits:
-  supercenter:
-    0.10: 200
-    0.20: 200
-    0.50: 100
-    1.0: 200
-    2.0: 200
-    5.0: 100
-    10.0: 50
-    20.0: 100
-    50.0: 80
-    100.0: 100
-    200.0: 50
-    500.0: 20
-    1000.0: 5
-  bodega:
-    0.10: 150
-    0.20: 150
-    0.50: 75
-    1.0: 150
-    2.0: 150
-    5.0: 75
-    10.0: 40
-    20.0: 80
-    50.0: 60
-    100.0: 80
-    200.0: 40
-    500.0: 15
-    1000.0: 3
-  express:
-    0.10: 100
-    0.20: 100
-    0.50: 50
-    1.0: 100
-    2.0: 100
-    5.0: 50
-    10.0: 30
-    20.0: 50
-    50.0: 40
-    100.0: 50
-    200.0: 20
-    500.0: 10
-    1000.0: 2
+denomination_fund_ratio: 0.03  # change fund = 3% of daily forecast (retail industry standard)
