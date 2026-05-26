@@ -21,6 +21,7 @@ Decision Tree", NeurIPS.
 """
 from __future__ import annotations
 
+import logging
 import warnings
 from pathlib import Path
 
@@ -32,6 +33,8 @@ import pandas as pd
 from sklearn.model_selection import TimeSeriesSplit
 
 from walmart_cash_forecast.config import Config
+
+logger = logging.getLogger(__name__)
 
 # Quantile levels: lower, median, upper
 QUANTILES = (0.1, 0.5, 0.9)
@@ -102,7 +105,12 @@ class MLForecaster:
         y: npt.NDArray[np.float32] = df[_TARGET].to_numpy(dtype=np.float32)
 
         for q in QUANTILES:
+            logger.info(
+                "Tuning q=%.2f  (%d Optuna trials, %d rows)",
+                q, self.config.ml.n_optuna_trials, len(y),
+            )
             best_params = self._tune(x_mat, y, q)
+            logger.info("Fitting final q=%.2f model with best params", q)
             reg = lgb.LGBMRegressor(
                 objective="quantile",
                 alpha=q,
@@ -231,5 +239,5 @@ class MLForecaster:
 
         sampler = optuna.samplers.TPESampler(seed=self.config.random_seed)
         study = optuna.create_study(direction="minimize", sampler=sampler)
-        study.optimize(objective, n_trials=self.config.ml.n_optuna_trials, show_progress_bar=False)
+        study.optimize(objective, n_trials=self.config.ml.n_optuna_trials, show_progress_bar=True)
         return study.best_params
