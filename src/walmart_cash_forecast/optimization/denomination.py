@@ -64,19 +64,19 @@ _DEFAULT_LIMITS: dict[float, int] = {
 # which is mathematically optimal but operationally wrong: cashiers need
 # small bills and coins to make change for customers.
 _DEFAULT_MINIMUMS: dict[float, int] = {
-    0.10:   0,
-    0.20:   0,
-    0.50:   0,
-    1.00:   0,
-    2.00:   0,
-    5.00:   0,
-    10.00:  0,
-    20.00:  100,   # $2,000  — petty change
-    50.00:  100,   # $5,000  — small transactions
-    100.00: 200,   # $20,000 — most common bill
-    200.00: 100,   # $20,000 — mid-range transactions
-    500.00:  50,   # $25,000 — larger purchases
-    1_000.00: 0,   # fill the rest with $1000s
+    0.10:  200,   # $20   — centavo change for $x.90 prices
+    0.20:  200,   # $40   — centavo change for $x.80 prices
+    0.50:  200,   # $100  — half-peso change
+    1.00:  300,   # $300  — peso coins for every transaction
+    2.00:  200,   # $400  — common small change
+    5.00:  200,   # $1,000 — frequent change denomination
+    10.00: 300,   # $3,000 — very common change denomination
+    20.00: 100,   # $2,000  — petty change
+    50.00: 100,   # $5,000  — small transactions
+    100.00: 200,  # $20,000 — most common bill
+    200.00: 100,  # $20,000 — mid-range transactions
+    500.00:  50,  # $25,000 — larger purchases
+    1_000.00: 0,  # fill the rest with $1000s
 }
 
 
