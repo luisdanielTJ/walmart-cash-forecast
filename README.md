@@ -8,8 +8,8 @@ excess cash held overnight.
 
 Stores frequently run out of change mid-shift or hold far too much overnight —
 both costly. This system forecasts daily cash demand at the store level and
-uses the newsvendor model to compute the optimal cash buffer, then solves an
-ILP to determine the exact coin/bill denomination mix.
+uses the newsvendor model to compute the optimal cash buffer, then distributes
+it across denominations using Banco de México circulation data.
 
 ## Solution Architecture
 
@@ -25,7 +25,7 @@ Raw CSVs
                           ├─ ConformalWrapper (split conformal intervals)
                           ├─ ModelBlender (Ridge stacking, softmax weights)
                           ├─ NewsvendorOptimizer (critical fractile q*)
-                          └─ DenominationSolver (ILP, PuLP + CBC)
+                          └─ DenominationSolver (proportional, BdM circulation shares)
 ```
 
 **Statistical depth:**
@@ -44,8 +44,8 @@ Trained on 203,958 transaction rows · 80 stores · 425 calendar days (Jan 2023 
 |--------|-------|
 | Train rows | 28,076 |
 | Calibration rows | 4,797 |
-| Blend weights (Bayes / ML) | 64.5% / 35.5% |
-| Conformal q̂ (90% interval half-width) | 294,462 MXN |
+| Blend weights (Bayes / ML) | 65.0% / 35.0% |
+| Conformal q̂ (90% interval half-width) | 235,569 MXN |
 | Distribution best fit | Negative Binomial (AIC 554k vs Poisson 22.5M) |
 | NegBin overdispersion α | 0.39 |
 | Payday effect (Mann-Whitney U p-value) | < 0.0001 |
@@ -112,12 +112,30 @@ POST /predict           → batch store-date forecast + denomination mix
 Example request:
 ```json
 {
-  "observations": [
-    {"store_id": "STR_001", "date": "2024-01-15", "day_of_week": 0, "is_payday": true}
-  ],
-  "stores": [
-    {"store_id": "STR_001", "region": "Norte", "store_format": "Supercenter"}
-  ]
+  "observations": [{
+    "store_id": "STR_001", "date": "2024-03-01", "day_of_week": 4,
+    "is_payday": false, "is_holiday": false, "is_buen_fin": false, "is_navidad_season": false,
+    "amount_cash_lag_1": 934836.0, "amount_cash_lag_7": 900000.0, "amount_cash_lag_14": 880000.0,
+    "amount_cash_roll7_mean": 910000.0, "amount_cash_roll7_std": 15000.0,
+    "amount_cash_roll28_mean": 905000.0, "cash_ratio": 0.5,
+    "days_since_payday": 1.0, "days_until_payday": 14.0
+  }],
+  "stores": [{"store_id": "STR_001", "region": "Norte", "store_format": "Supercenter"}]
+}
+```
+
+Example response:
+```json
+{
+  "predictions": [{
+    "store_id": "STR_001", "date": "2024-03-01",
+    "forecast_blend": 1003044.11, "lower": 767475.52, "upper": 1238612.69,
+    "q_star": 1120210.69,
+    "denom_0_10": 200, "denom_0_20": 200, "denom_0_50": 200,
+    "denom_1_00": 300, "denom_2_00": 200, "denom_5_00": 150, "denom_10_00": 150,
+    "denom_20_00": 120, "denom_50_00": 78, "denom_100_00": 99, "denom_200_00": 63,
+    "denom_500_00": 0, "denom_1000_00": 0
+  }]
 }
 ```
 
@@ -125,11 +143,12 @@ Interactive docs: `http://localhost:8000/docs`
 
 ## MLflow Experiment Tracking
 
-Every training run is automatically logged to a local MLflow tracking store.
+Every training run is automatically logged to a local SQLite tracking store
+at `models/mlflow.db`.
 
 ```bash
 # After running walmart-forecast train ..., open the UI:
-mlflow ui
+uv run mlflow ui --backend-store-uri sqlite:///models/mlflow.db
 # → http://localhost:5000
 ```
 
@@ -140,8 +159,9 @@ Logged per run:
 | **Params** | `n_draws`, `n_tune`, `n_chains`, `target_accept`, `holdout_days`, `random_seed`, cost model, conformal α, Optuna trials |
 | **Metrics** | `blend_weight_bayes/ml`, `conformal_q_hat`, `payday_pvalue`, `payday_effect_size`, `pct_stores_stationary`, `negbin_alpha`, AIC scores |
 | **Artefacts** | All model artefacts (Bayesian trace, LightGBM boosters, conformal + blender weights, metadata JSON) |
+| **Model Registry** | Each run registers `walmart-cash-forecast` as a new version in the Model Registry |
 
-The `mlruns/` directory is created locally and is not committed to git.
+`models/mlflow.db` is created locally and is not committed to git.
 
 ## Development
 

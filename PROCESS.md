@@ -41,10 +41,13 @@ from burst-event days (paydays, holidays).
 ### 2.3 Stationarity
 
 ADF + KPSS joint test (opposite null hypotheses give a definitive verdict):
-- ~85% of store series pass both tests → stationary in levels.
-- Remaining stores have mild trends but STL trend component is small.
-- Decision: model in levels (not differences); include trend implicitly via
-  hierarchical intercepts in the Bayesian model.
+- 0% of store series are stationary in levels — all 80 stores show some
+  non-stationarity (mild trend or structural shift over 425 days).
+- STL trend component is small relative to seasonal amplitude, so differencing
+  is not necessary.
+- Decision: model in levels; hierarchical intercepts in the Bayesian model
+  absorb store-level baselines; lag and rolling features in the ML model
+  capture local trend implicitly.
 
 ### 2.4 Weekly seasonality
 
@@ -129,14 +132,31 @@ the demand CDF empirically and apply the critical-fractile formula. Using full
 posterior samples (not just the point estimate) propagates forecasting
 uncertainty into the stocking decision — a key advantage of Bayesian modelling.
 
-### 4.2 Denomination ILP
+### 4.2 Denomination Mix (Proportional Allocator)
 
-Once q* is computed, an ILP minimises the total number of coins + bills
-(objective: fewer pieces = less counting time, lower transport cost) while
-covering q* MXN. Solved with PuLP + CBC in milliseconds per store.
+Once q* is computed, the change fund for the registers is sized at **3% of the
+daily forecast** (industry standard for retail change fund sizing). That fund is
+distributed across denominations using circulation shares from the **Banco de
+México 2023 Annual Report on Banknote and Coin Circulation**:
 
-All 13 Banco de México denominations are modelled ($0.10 to $1,000), with
-capacity limits configurable per store format.
+| Denomination | Share | Rationale |
+|---|---|---|
+| $200 | 42% | Most circulated bill in MX retail |
+| $100 | 33% | Second most circulated |
+| $50  | 13% | Mid-size change |
+| $20  | 8%  | Petty change |
+| $500 | 4%  | Occasional large-purchase change |
+| Coins ($0.10–$10) | Fixed counts | Operational minimum per register, not volume-driven |
+| $1,000 | 0% | Not stocked — most MX retailers refuse them |
+
+**Why not an ILP?** An ILP minimising total piece count always selects the
+largest available denomination (all $200 bills), which is mathematically optimal
+but operationally wrong — cashiers need a mix to make change. Proportional
+allocation grounded in circulation data avoids this failure mode while remaining
+simple and auditable.
+
+The denomination quantities vary day-to-day with the forecast: a busy payday
+gets proportionally more bills than a quiet weekday.
 
 ---
 
@@ -162,7 +182,7 @@ capacity limits configurable per store format.
 | Conformal | Unit | Empirical coverage ≥ 1−α, lower ≥ 0 |
 | Blender | Unit | Weights ≥ 0, sum to 1, MSE ≤ max(base MSEs) |
 | Newsvendor | Unit | q* = CR-th quantile, E[cost(q*)] ≤ E[cost(extremes)] |
-| ILP | Unit | total_value ≥ target, infeasibility detected |
+| Denomination | Unit | coin minimums present, bill counts scale with forecast, $500/$1000 = 0 |
 | API | Unit (mocked) | HTTP 200 on /health, 200 on /predict, 422 on bad schema |
 | Pipelines | Integration (Bayesian mocked) | All artefact files present, output DataFrame columns correct |
 
