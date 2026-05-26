@@ -188,7 +188,22 @@ gets proportionally more bills than a quiet weekday.
 
 ---
 
-## 7. What I Would Do With More Time
+## 7. AI Tools Used
+
+**Claude Code (Anthropic)** was used as a pair-programming assistant throughout this project.
+
+Specifically, it helped with:
+
+- **Boilerplate and scaffolding** — generating the initial project structure (CLI, FastAPI app, PyMC model skeleton, LightGBM pipeline) so time could be focused on statistical design decisions rather than plumbing.
+- **Debugging** — diagnosing MLflow backend issues, fixing Optuna warning suppression, and resolving denomination allocator edge cases.
+- **Code review** — catching Ruff lint issues, type annotation gaps, and test coverage holes before commit.
+- **Documentation** — drafting docstrings and sections of this PROCESS.md, which were then reviewed and revised for accuracy.
+
+All statistical design decisions (model structure, prior choices, newsvendor framing, conformal calibration, denomination proportions from BdM data) were made by me and validated against the data. Claude Code accelerated implementation; it did not drive the analytical choices.
+
+---
+
+## 8. What I Would Do With More Time
 
 1. **Covariates**: temperature, local events (football matches, concerts), competitor promotions.
 2. **Online learning**: incremental Bayesian updating with new daily observations without full refit.
