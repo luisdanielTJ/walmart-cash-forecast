@@ -52,11 +52,11 @@ _DEFAULT_LIMITS: dict[float, int] = {
     5.00:      200,
     10.00:     500,
     20.00:    1_000,
-    50.00:    1_000,
-    100.00:   2_000,
-    200.00:   3_000,
+    50.00:    1_500,
+    100.00:   3_000,
+    200.00:   4_000,
     500.00:   5_000,
-    1_000.00: 5_000,
+    1_000.00:   100,  # few $1000 bills — many MX stores refuse them
 }
 
 # Minimum units guaranteed in every float regardless of target size.
