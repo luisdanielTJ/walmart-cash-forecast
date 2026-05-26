@@ -38,6 +38,7 @@ Thumbs.db
 
 # MLflow tracking store (local runs — not committed)
 /mlruns/
+/mlflow.db
 
 # Data processed outputs
 data/processed/
