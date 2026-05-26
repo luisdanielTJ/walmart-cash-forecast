@@ -228,9 +228,20 @@ class TrainingPipeline:
         mlflow.log_param("dist_best_model", stat_report["distribution"]["best_model"])
         mlflow.log_artifacts(str(self.model_dir), artifact_path="model_artefacts")
 
-        # Register in Model Registry so the Models tab shows a versioned entry
+        # Register in Model Registry so the Models tab shows a versioned entry.
+        # We use MlflowClient directly because register_model() requires an MLmodel
+        # file (created by log_model), whereas we use log_artifacts for raw files.
         run_id = mlflow.active_run().info.run_id  # type: ignore[union-attr]
-        mlflow.register_model(f"runs:/{run_id}/model_artefacts", "walmart-cash-forecast")
+        client = mlflow.tracking.MlflowClient()
+        try:
+            client.create_registered_model("walmart-cash-forecast")
+        except mlflow.exceptions.MlflowException:
+            pass  # model already registered from a prior run
+        client.create_model_version(
+            name="walmart-cash-forecast",
+            source=mlflow.get_artifact_uri("model_artefacts"),
+            run_id=run_id,
+        )
 
         logger.info("Training complete. Artefacts saved to %s", self.model_dir)
         return metadata
