@@ -222,7 +222,7 @@ class MLForecaster:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     model.fit(x_mat[train_idx], y[train_idx])
-                preds: npt.NDArray[np.float64] = model.predict(x_mat[val_idx])
+                    preds: npt.NDArray[np.float64] = model.predict(x_mat[val_idx])
                 # Pinball loss: L_q(y, ŷ) = q·max(y-ŷ, 0) + (1-q)·max(ŷ-y, 0)
                 errors: npt.NDArray[np.float64] = y[val_idx].astype(np.float64) - preds
                 loss = float(np.mean(np.where(errors >= 0, q * errors, (q - 1.0) * errors)))
