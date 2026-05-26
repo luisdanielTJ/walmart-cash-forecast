@@ -2,9 +2,9 @@
 import pandas as pd
 
 from walmart_cash_forecast.optimization.denomination import (
+    _COIN_MINIMUMS,
     DENOMINATIONS,
     DenominationSolver,
-    _COIN_MINIMUMS,
 )
 
 
