@@ -124,14 +124,13 @@ class PredictionPipeline:
             q_stars.append(result.q_star)
 
         # --- Denomination mix ---
-        # The denomination mix covers the registers' change fund, not the full
-        # cash buffer (which sits mostly in the safe). Cap the ILP target so
-        # bill counts stay operationally realistic.
-        fund_cap = self.config.denomination_fund_cap
+        # Pass the blended forecast as the "target" so the change fund scales
+        # with daily demand (fund = fund_ratio × forecast_blend).  q_star is
+        # the safety buffer recommendation and is reported separately.
         targets = pd.DataFrame({
             "store_id": future_df["store_id"].values,
             "date": future_df["date"].values,
-            "q_star": [min(q, fund_cap) for q in q_stars],
+            "q_star": blend_pred,
         })
         denom_results = self._denomination.solve_batch(targets)
         denom_df = self._denomination.to_dataframe(denom_results)
